@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Aether AI - Neural Dither",
+  "description": "A cutting-edge landing page for an AI company featuring a custom WebGL dither shader, morphing geometry, and reactive 3D visuals using Three.js and React.",
+  "requestFramePermissions": []
+}
