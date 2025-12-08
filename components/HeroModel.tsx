@@ -1,12 +1,16 @@
 import React, { useRef, useMemo } from 'react';
-import { useFrame, ThreeElements } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { vertexShader, fragmentShader } from '../shaders/dither';
 
 // Augment global JSX namespace to include React Three Fiber elements
 declare global {
   namespace JSX {
-    interface IntrinsicElements extends ThreeElements {}
+    interface IntrinsicElements {
+      mesh: any;
+      icosahedronGeometry: any;
+      shaderMaterial: any;
+    }
   }
 }
 
@@ -19,8 +23,9 @@ const HeroModel: React.FC = () => {
       uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
       uLightPos: { value: new THREE.Vector3(5, 5, 5) },
-      uColorPrimary: { value: new THREE.Color('#ffffff') }, // White highlights
-      uColorSecondary: { value: new THREE.Color('#1a1a1a') }, // Dark grey shadows
+      // Updated colors for "Red/Black" theme
+      uColorPrimary: { value: new THREE.Color('#ef4444') }, // Neon Red
+      uColorSecondary: { value: new THREE.Color('#000000') }, // Pure Black
     }),
     []
   );
@@ -33,12 +38,13 @@ const HeroModel: React.FC = () => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
       
-      // Update resolution on resize (simple check)
+      // Update resolution dynamically based on R3F state size to ensure responsiveness
+      const { width, height } = state.size;
       if (
-        materialRef.current.uniforms.uResolution.value.x !== window.innerWidth ||
-        materialRef.current.uniforms.uResolution.value.y !== window.innerHeight
+        materialRef.current.uniforms.uResolution.value.x !== width ||
+        materialRef.current.uniforms.uResolution.value.y !== height
       ) {
-         materialRef.current.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+         materialRef.current.uniforms.uResolution.value.set(width, height);
       }
       
       // Dynamic light movement
